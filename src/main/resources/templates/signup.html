@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+</head>
+<body>
+    <h1>Sign up Page</h1>
+<!--    <form name="signup" action="/auth/signup/process" method="post">-->
+<!--        <div>-->
+<!--            <label for="email">이메일</label>-->
+<!--            <input type="text" id="email" th:name="email" placeholder="Email" required>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <label>비밀번호</label>-->
+<!--            <input type="password" id="password" th:name="password" placeholder="Password" required>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <label>이름</label>-->
+<!--            <input type="text" id="name" th:name="name" placeholder="Name" required>-->
+<!--        </div>-->
+<!--        <div id="gender">-->
+<!--            <label for="gender">성별</label>-->
+<!--            <select th:name="gender">-->
+<!--                <option th:each="gender : ${genders}" th:value="${gender.getKey()}" th:text="${gender.getValue()}"></option>-->
+<!--            </select>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <button type="submit">가입</button>-->
+<!--        </div>-->
+<!--    </form>-->
+
+    <form th:object="${signupFormDTO}" action="/auth/signup/process" method="post">
+        <div>
+            <label for="email">이메일</label>
+            <input type="text" th:field="*{email}" placeholder="Email" required>
+        </div>
+        <div>
+            <label>비밀번호</label>
+            <input type="password" th:field="*{password}" placeholder="Password" required>
+        </div>
+        <div>
+            <label>이름</label>
+            <input type="text" th:field="*{name}" placeholder="Name" required>
+        </div>
+        <div id="gender">
+            <label for="gender">성별</label>
+            <select th:field="*{gender}">
+                <option th:each="gender : ${genders}" th:value="${gender}" th:text="${gender.getDescription()}"></option>
+            </select>
+        </div>
+        <div>
+            <button type="submit">가입</button>
+        </div>
+    </form>
+</body>
+</html>
