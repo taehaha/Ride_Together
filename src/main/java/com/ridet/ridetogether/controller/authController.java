@@ -33,6 +33,9 @@ public class authController {
         return;
     }
 
+    /**
+     * 로그인
+     */
     @GetMapping("/signin")
     public String signin(Model model, HttpSession session) {
         model.addAttribute("signinFormDTO", new SigninFormDTO());
@@ -57,6 +60,9 @@ public class authController {
         return "redirect:/";
     }
 
+    /**
+     * 계정 생성
+     */
     @GetMapping("/signup")
     public String signup(Model model) {
         model.addAttribute("signupFormDTO", new SignupFormDTO());
@@ -86,6 +92,12 @@ public class authController {
             return "redirect:/auth/signup";
         }
 
+        return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
         return "redirect:/";
     }
 }
