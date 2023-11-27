@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.Optional;
 
@@ -20,6 +19,9 @@ public class mainController {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Main Page
+     */
     @GetMapping("/")
     public String index(Model model, HttpSession session) {
         Long id =  (Long) session.getAttribute("id");

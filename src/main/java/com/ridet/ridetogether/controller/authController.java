@@ -34,14 +34,20 @@ public class authController {
     }
 
     /**
-     * 로그인
+     * Signin Page
      */
     @GetMapping("/signin")
     public String signin(Model model, HttpSession session) {
-        model.addAttribute("signinFormDTO", new SigninFormDTO());
-        return "signin";
+        if (session.getAttribute("id") == null) {
+            model.addAttribute("signinFormDTO", new SigninFormDTO());
+            return "signin";
+        }
+        return "redirect:/";
     }
 
+    /**
+     * Signin Process
+     */
     @PostMapping("/signin/process")
     public String signinProcess(@ModelAttribute SigninFormDTO signinFormDTO,
                                 HttpSession session) {
@@ -61,7 +67,7 @@ public class authController {
     }
 
     /**
-     * 계정 생성
+     * Signup Page
      */
     @GetMapping("/signup")
     public String signup(Model model) {
@@ -71,6 +77,9 @@ public class authController {
         return "signup";
     }
 
+    /**
+     * Signup Process
+     */
     @PostMapping("/signup/process")
     public String signupProcess(@ModelAttribute("SignupFormDTO") SignupFormDTO signupFormDTO) {
         // TODO: Data Validation 필요
@@ -95,6 +104,9 @@ public class authController {
         return "redirect:/";
     }
 
+    /**
+     * Logout Process
+     */
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=53145e5b6696588dc70ac4fcb0dda36a"></script>
 <head>
     <meta charset="UTF-8">
     <title>Hello world</title>
@@ -7,8 +8,100 @@
 <body>
     <h1 th:if="${user != null}">Welcome! [[${user.getName()}]]</h1>
     <h1>Hello world!</h1>
-    <a href="/auth/signin">로그인</a>
-    <a href="/auth/signup">회원가입</a>
-    <a th:if="${user != null}" href="/auth/logout">로그아웃</a>
+    <!-- 계정 관련 -->
+    <div>
+        <a th:if="${user == null}" th:href="@{/auth/signin}">로그인</a>
+        <a th:if="${user == null}" th:href="@{/auth/signup}">회원가입</a>
+        <a th:if="${user != null}" th:href="@{/auth/logout}">로그아웃</a>
+    </div>
+    <!--  탐색 관련  -->
+    <div>
+    </div>
+    <!-- 맵 표시 -->
+    <div id="map" style="width: 100vw; height: 50vh"></div>
 </body>
+
+<script>
+    // https://velog.io/@hyunjoogo/%EC%B9%B4%EC%B9%B4%EC%98%A4-Maps-API%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%98%EC%97%AC-%EA%B2%BD%EB%A1%9C-%ED%91%9C%EC%8B%9C%ED%95%98%EA%B8%B0#%EA%B2%BD%EB%A1%9C%ED%91%9C%EC%8B%9C%ED%95%98%EA%B8%B0-%ED%8F%B4%EB%A6%AC%EB%9D%BC%EC%9D%B8-%EB%A7%8C%EB%93%A4%EA%B8%B0
+    // 경로표시 참고하기
+    let container = document.getElementById("map");
+    let map;
+    let currentPositionMarker;
+    let centerPositionMarker;
+
+    // 위치서비스
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                // 현재 위치
+                let coords = position.coords;
+                let latlng = new kakao.maps.LatLng(coords.latitude, coords.longitude);
+
+                // map을 위한 options
+                let options = {
+                    center: latlng,
+                    level: 3,
+                    draggable: true,
+                }
+                map = new kakao.maps.Map(container, options);
+
+                // marker init
+                currentPositionMarker = new kakao.maps.Marker({
+                    title: "현재 위치",
+                    map: map,
+                    position: latlng,
+                    draggable: false,
+                    clickable: false,
+                });
+                centerPositionMarker = new kakao.maps.Marker({
+                    title: "목적지 위치",
+                    map: map,
+                    position: map.getCenter(),
+                    draggable: false,
+                    clickable: false,
+                });
+
+                //InfoWindow 띄우기
+                (new kakao.maps.InfoWindow({
+                    position: latlng,
+                    content: "현재 위치"
+                })).open(map, currentPositionMarker);
+
+                // map 중앙좌표 변경 Listener
+                kakao.maps.event.addListener(map, 'center_changed', () => {
+                    centerPositionMarker.setMap(null);
+                    centerPositionMarker = new kakao.maps.Marker({
+                        title: "목적지 위치",
+                        map: map,
+                        position: map.getCenter(),
+                        draggable: false,
+                        clickable: false,
+                    });
+                    centerPositionMarker.setMap(map);
+                });
+
+            });
+
+        // 현재 좌표 변경시 marker 좌표 이동 Listener
+        const watchID = navigator.geolocation.watchPosition((position) => {
+            let coords = position.coords;
+            let currentLatLng = new kakao.maps.LatLng(coords.latitude, coords.longitude);
+            map.panTo(currentLatLng); // 시점 이동
+
+            currentPositionMarker.setMap(null); // 기존에 표시된 marker 제거
+
+            currentPositionMarker = new kakao.maps.Marker({
+                map: map,
+                position: currentLatLng,
+                draggable: false,
+                clickable: false,
+            });
+
+            currentPositionMarker.setMap(map); // 맵에 marker 생성
+        });
+
+    } else { // 위치서비스 사용 불가할 때
+        container.innerText = `위치정보를 활성화해주세요.`;
+    }
+</script>
 </html>
