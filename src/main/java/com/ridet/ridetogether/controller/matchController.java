@@ -5,6 +5,7 @@ import com.ridet.ridetogether.domain.Ride;
 import com.ridet.ridetogether.domain.User;
 import com.ridet.ridetogether.domain.dto.MatchOpenDTO;
 import com.ridet.ridetogether.repository.UserRepository;
+import com.ridet.ridetogether.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +18,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class matchController {
-    private final UserRepository userRepository;
+    //TODO: UserService로 변경
+    private final UserService userService;
+
 
     @Autowired
-    public matchController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public matchController(UserService userService) {
+        this.userService = userService;
     }
 
     //TODO: api 접근 가능 도메인 제한 필요
@@ -40,14 +43,8 @@ public class matchController {
     public Map matchOpen(@RequestBody MatchOpenDTO matchOpenDTO,
                             HttpSession session) throws Exception {
         // 요청한 User 가져오기
-        User user;
         Long id = (Long) session.getAttribute("id");
-        Optional<User> optionalUser = userRepository.getUserById(id);
-        if (optionalUser.isPresent()) {
-            user = optionalUser.get();
-        } else {
-            throw new Exception(); // 해당 id의 user가 존재하지 않을 경우 500을 날림
-        }
+        User user = userService.getUserById(id).orElseThrow();
 
         // DTO로부터 현재위치, 목적지 가져오기
         Location currentLocation = new Location(matchOpenDTO.getCurrentLatitude(), matchOpenDTO.getCurrentLongtitude());
