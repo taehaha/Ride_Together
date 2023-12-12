@@ -3,6 +3,10 @@ package com.ridet.ridetogether.domain;
 import com.ridet.ridetogether.Gender;
 import com.ridet.ridetogether.UserRole;
 
+/**
+ * <h2>회원</h2>
+ * <h4>사용자 계정 정보</h4>
+ */
 public class User {
     private Long id;
     private String email;

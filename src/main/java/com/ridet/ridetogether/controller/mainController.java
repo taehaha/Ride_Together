@@ -25,7 +25,6 @@ public class mainController {
     @GetMapping("/")
     public String index(Model model, HttpSession session) {
         Long id =  (Long) session.getAttribute("id");
-
         Optional<User> optionalUser = userRepository.getUserById(id);
         optionalUser.ifPresent(user -> model.addAttribute("user", user));
 

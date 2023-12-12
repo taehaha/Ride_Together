@@ -1,5 +1,6 @@
 package com.ridet.ridetogether.domain.dto;
 
+//TODO: Builder 추가
 public class SigninFormDTO {
     private String email;
     private String password;

@@ -3,6 +3,7 @@ package com.ridet.ridetogether.domain.dto;
 import com.ridet.ridetogether.Gender;
 import com.ridet.ridetogether.UserRole;
 
+//TODO: Builder 추가
 public class SignupFormDTO {
     public String email;
     public String password;
