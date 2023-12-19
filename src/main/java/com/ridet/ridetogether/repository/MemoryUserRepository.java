@@ -8,7 +8,7 @@ import java.util.*;
 
 @Repository
 public class MemoryUserRepository implements UserRepository {
-    private static Map<Long, User> store = new HashMap<>();
+    private static Map<Integer, User> store = new HashMap<>();
     private static long sequence = 0L;
 
     @Override
@@ -19,8 +19,9 @@ public class MemoryUserRepository implements UserRepository {
             throw new UserEmailDuplicatedException(user.getEmail() + " EMAIL 중복입니다.");
         }
 
+        //TODO: User에서 id값 제외시키기
         // store의 key 값을 User에도 저장
-        long storeSize = store.size();
+        int storeSize = store.size();
         user.setId(storeSize);
         store.put(storeSize, user);
         return user;
@@ -32,9 +33,9 @@ public class MemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> getUserById(Long id) {
+    public Optional<User> getUserById(int id) {
         return store.values().stream()
-                .filter(user -> user.getId().equals(id))
+                .filter(user -> user.getId() == id)
                 .findAny();
     }
 

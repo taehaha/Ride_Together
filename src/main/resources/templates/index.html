@@ -110,7 +110,6 @@
 
     // Event Listeners
     // 매칭 시작
-    //TODO: 매칭시작 POST요청 작성
     document.getElementById("matchButton").addEventListener("click", () => {
         let position = map.getCenter();
 
@@ -134,9 +133,13 @@
             .then(res => res.json())
             .then((data) => {
                 result = data;
+
+                // 테스트용
+                alert(result.isSuccess + " " + result.numOfRide);
             }).catch((error) => {
                 result = error;
         });
+
     });
 </script>
 </html>

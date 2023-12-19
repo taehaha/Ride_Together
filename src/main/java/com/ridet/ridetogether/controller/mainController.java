@@ -22,9 +22,13 @@ public class mainController {
 
     @GetMapping("/")
     public String index(Model model, HttpSession session) {
-        Long id =  (Long) session.getAttribute("id");
-        Optional<User> optionalUser  = userService.getUserById(id);
-        optionalUser.ifPresent(user -> model.addAttribute("user", user));
+        Integer id = (Integer) session.getAttribute("id");
+
+        // 로그인이 된 상태일 경우
+        if (id != null) {
+            Optional<User> optionalUser  = userService.getUserById(id);
+            optionalUser.ifPresent(user -> model.addAttribute("user", user));
+        }
 
         return "index";
     }

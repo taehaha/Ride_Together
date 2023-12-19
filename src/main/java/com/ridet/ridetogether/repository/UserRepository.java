@@ -9,7 +9,7 @@ public interface UserRepository {
     public User save(User user);
     public void delete(User user);
 
-    public Optional<User> getUserById(Long id);
+    public Optional<User> getUserById(int id);
     public Optional<User> getUserByEmail(String email);
 
     public List<User> findAllUser();

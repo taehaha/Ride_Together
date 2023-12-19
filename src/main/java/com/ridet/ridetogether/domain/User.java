@@ -8,7 +8,7 @@ import com.ridet.ridetogether.UserRole;
  * <h4>사용자 계정 정보</h4>
  */
 public class User {
-    private Long id;
+    private int id;
     private String email;
     private String password;
     private String name;
@@ -19,7 +19,7 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String email, String password, String name, Gender gender, UserRole role, boolean isActive) {
+    public User(int id, String email, String password, String name, Gender gender, UserRole role, boolean isActive) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -29,11 +29,11 @@ public class User {
         this.isActive = isActive;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
