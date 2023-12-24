@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-//TODO: MatchRepository 구현 작성중
 @Repository
 public class MemoryMatchRepository implements MatchRepository {
     private static Map<Integer, Ride> store = new HashMap<>();
@@ -17,12 +16,12 @@ public class MemoryMatchRepository implements MatchRepository {
     public int open(Ride ride) {
         int ride_id = store.size();
         store.put(ride_id, ride);
-        return (int) ride_id;
+        return ride_id;
     }
 
     @Override
-    public void close(int id) {
-        store.remove(id);
+    public void close(int rideId) {
+        store.remove(rideId);
     }
 
     @Override

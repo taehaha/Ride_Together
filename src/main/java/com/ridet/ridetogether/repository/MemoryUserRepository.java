@@ -19,7 +19,6 @@ public class MemoryUserRepository implements UserRepository {
             throw new UserEmailDuplicatedException(user.getEmail() + " EMAIL 중복입니다.");
         }
 
-        //TODO: User에서 id값 제외시키기
         // store의 key 값을 User에도 저장
         int storeSize = store.size();
         user.setId(storeSize);

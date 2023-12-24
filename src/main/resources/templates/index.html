@@ -122,7 +122,6 @@
         }
 
         // API 요청
-        let result;
         fetch("/api/open", {
             method: "POST",
             body: JSON.stringify(data),
@@ -132,14 +131,12 @@
         })
             .then(res => res.json())
             .then((data) => {
-                result = data;
-
                 // 테스트용
-                alert(result.isSuccess + " " + result.numOfRide);
+                alert(data.isSuccess + " " + data.numOfRide);
             }).catch((error) => {
-                result = error;
+            console.error(error);
+            alert("로그인이 필요합니다.");
         });
-
     });
 </script>
 </html>

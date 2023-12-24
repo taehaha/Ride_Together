@@ -1,7 +1,6 @@
 package com.ridet.ridetogether.repository;
 
 import com.ridet.ridetogether.domain.Ride;
-import com.ridet.ridetogether.domain.User;
 
 import java.util.Optional;
 
@@ -9,7 +8,7 @@ import java.util.Optional;
 public interface MatchRepository {
 
     public int open(Ride ride);
-    public void close(int id);
+    public void close(int rideId);
     public Optional<Ride> findByUserId(int id);
     public int numOfCurrentRide();
 }

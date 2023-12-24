@@ -8,10 +8,14 @@ import com.ridet.ridetogether.exception.RideAlreadyMatchedException;
 import com.ridet.ridetogether.exception.RideAlreadyOpenedException;
 import com.ridet.ridetogether.service.MatchService;
 import com.ridet.ridetogether.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,17 +32,19 @@ public class matchController {
         this.matchService = matchService;
     }
 
-
-    //TODO: api 접근 가능 도메인 제한 필요
-    @InitBinder
-    public void init() {
-    }
-
+    //TODO: API접근제한 필요
     @PostMapping("/open")
-    public Map matchOpen(@RequestBody MatchOpenDTO matchOpenDTO,
-                            HttpSession session) throws RideAlreadyOpenedException {
-        // 요청한 User 가져오기
-        int id = (int) session.getAttribute("id");
+    public ResponseEntity<Map> matchOpen(@RequestBody MatchOpenDTO matchOpenDTO,
+                                    HttpSession session) throws RideAlreadyOpenedException {
+        // session에서 user id 가져오기
+        Integer id = (Integer) session.getAttribute("id");
+
+        // 로그인 여부 확인. 로그인이 안되어있으면 401을 반환함
+        if (id == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        // API요청한 User 가져오기
         User user = userService.getUserById(id).orElseThrow();
 
         // DTO로부터 현재위치, 목적지 가져오기
@@ -63,6 +69,7 @@ public class matchController {
             e.printStackTrace();
             System.err.println(e.getMessage());
         }
-        return result;
+
+        return ResponseEntity.ok(result);
     }
 }

@@ -1,6 +1,5 @@
 package com.ridet.ridetogether.domain.dto;
 
-//TODO: Builder 추가
 public class MatchOpenDTO {
     // 현재위치 좌표
     private double currentLatitude;
