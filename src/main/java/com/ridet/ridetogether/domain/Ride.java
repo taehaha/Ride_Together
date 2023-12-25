@@ -7,7 +7,15 @@ import java.util.Date;
  * <h4>사용자가 목적지를 지정하고 매칭을 누르면 생성되는 객체</h4>
  */
 public class Ride {
-    public Ride(int userId, Location currentLocation, Location destinationLocation, Date rideRequestDate, Ride matchedRide) {
+    private int id; // Ride id
+    private int userId; // 요청자
+    private Location currentLocation; // 요청된 위치
+    private Location destinationLocation; // 목적지
+    private Date rideRequestDate; // 요청시각
+    private Ride matchedRide; // 매칭이 된 Ride. if not matched : null
+
+    public Ride(int id, int userId, Location currentLocation, Location destinationLocation, Date rideRequestDate, Ride matchedRide) {
+        this.id = id;
         this.userId = userId;
         this.currentLocation = currentLocation;
         this.destinationLocation = destinationLocation;
@@ -15,11 +23,16 @@ public class Ride {
         this.matchedRide = matchedRide;
     }
 
-    private int userId; // 요청자
-    private Location currentLocation; // 요청된 위치
-    private Location destinationLocation; // 목적지
-    private Date rideRequestDate; // 요청시각
-    private Ride matchedRide; // 매칭이 된 Ride. if not matched : null
+    public static void Builder() {
+        int id;
+        int userId;
+        Location currentLocation;
+        Location destinationLocation;
+        Date rideRequestDate;
+        Ride matchedRide;
+
+
+    }
 
     public int getUserId() {
         return userId;

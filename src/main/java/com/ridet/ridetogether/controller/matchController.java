@@ -4,6 +4,7 @@ import com.ridet.ridetogether.domain.Location;
 import com.ridet.ridetogether.domain.Ride;
 import com.ridet.ridetogether.domain.User;
 import com.ridet.ridetogether.domain.dto.MatchOpenDTO;
+import com.ridet.ridetogether.domain.dto.MatchOpenResponseDTO;
 import com.ridet.ridetogether.exception.RideAlreadyMatchedException;
 import com.ridet.ridetogether.exception.RideAlreadyOpenedException;
 import com.ridet.ridetogether.service.MatchService;
@@ -32,9 +33,8 @@ public class matchController {
         this.matchService = matchService;
     }
 
-    //TODO: API접근제한 필요
     @PostMapping("/open")
-    public ResponseEntity<Map> matchOpen(@RequestBody MatchOpenDTO matchOpenDTO,
+    public ResponseEntity<MatchOpenResponseDTO> matchOpen(@RequestBody MatchOpenDTO matchOpenDTO,
                                     HttpSession session) throws RideAlreadyOpenedException {
         // session에서 user id 가져오기
         Integer id = (Integer) session.getAttribute("id");
@@ -52,24 +52,21 @@ public class matchController {
         Location destinationLocation = new Location(matchOpenDTO.getDestinationLatitude(), matchOpenDTO.getDestinationLongtitude());
 
         // Ride 생성
-        Ride ride = new Ride(user.getId(), currentLocation, destinationLocation, new Date(), null);
+        Ride ride = new Ride(matchService.numOfCurrentRide(), user.getId(), currentLocation, destinationLocation, new Date(), null);
 
-        // json 형식 return값
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("isSuccess", "true");
-        result.put("message", null);
-        result.put("numOfRide", matchService.numOfCurrentRide());
+        MatchOpenResponseDTO returnDTO = new MatchOpenResponseDTO();
 
         // 매칭
         try {
             matchService.matchOpen(ride);
+            returnDTO.setSuccess(true);
         } catch (RideAlreadyOpenedException | RideAlreadyMatchedException e) {
-            result.replace("isSuccess", "false");
-            result.replace("message", e.getMessage());
+            returnDTO.setSuccess(false);
             e.printStackTrace();
             System.err.println(e.getMessage());
         }
+        returnDTO.setNumOfRide(matchService.numOfCurrentRide());
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(returnDTO);
     }
 }
