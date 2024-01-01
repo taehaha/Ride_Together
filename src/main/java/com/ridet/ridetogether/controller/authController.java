@@ -75,13 +75,12 @@ public class authController {
     public String signupProcess(@ModelAttribute("SignupFormDTO") SignupFormDTO signupFormDTO) {
         // TODO: Data Validation 필요
         // 나머지 User 데이터 추가
-        User newUser = new User();
-        newUser.setEmail(signupFormDTO.getEmail());
-        newUser.setPassword(signupFormDTO.getPassword());
-        newUser.setName(signupFormDTO.getName());
-        newUser.setGender(signupFormDTO.getGender());
-        newUser.setRole(UserRole.USER);
-        newUser.setActive(true);
+        User newUser = new User.Builder(signupFormDTO.email, signupFormDTO.password)
+                .name(signupFormDTO.name)
+                .gender(signupFormDTO.gender)
+                .role(UserRole.USER)
+                .active(false)
+                .build();
 
         // User Email 중복 확인
         try {

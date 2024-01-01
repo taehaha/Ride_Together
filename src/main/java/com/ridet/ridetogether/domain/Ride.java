@@ -3,7 +3,7 @@ package com.ridet.ridetogether.domain;
 import java.util.Date;
 
 /**
- * <h2>매치 요청된 RIDE</h2>
+ * <h2>RIDE</h2>
  * <h4>사용자가 목적지를 지정하고 매칭을 누르면 생성되는 객체</h4>
  */
 public class Ride {
@@ -23,7 +23,7 @@ public class Ride {
         this.matchedRide = matchedRide;
     }
 
-    public static void Builder() {
+    public static class Builder {
         int id;
         int userId;
         Location currentLocation;
@@ -31,7 +31,26 @@ public class Ride {
         Date rideRequestDate;
         Ride matchedRide;
 
+        public Builder(int id, int userId, Location currentLocation, Location destinationLocation) {
+            this.id = id;
+            this.userId = userId;
+            this.currentLocation = currentLocation;
+            this.destinationLocation = destinationLocation;
+        }
 
+        public Builder rideRequestDate(Date date) {
+            this.rideRequestDate = date;
+            return this;
+        }
+
+        public Builder matchedRide(Ride matchedRide) {
+            this.matchedRide = matchedRide;
+            return this;
+        }
+
+        public Ride build() {
+            return new Ride(id, userId, currentLocation, destinationLocation, rideRequestDate, matchedRide);
+        }
     }
 
     public int getUserId() {

@@ -8,25 +8,60 @@ import com.ridet.ridetogether.UserRole;
  * <h4>사용자 계정 정보</h4>
  */
 public class User {
-    private int id;
+    private Integer id; // id는 Repository단에서 User 저장시 생성됨
     private String email;
     private String password;
     private String name;
     private Gender gender;
     private UserRole role;
-    private boolean isActive;
+    private boolean active;
 
-    public User() {
-    }
-
-    public User(int id, String email, String password, String name, Gender gender, UserRole role, boolean isActive) {
-        this.id = id;
+    public User(String email, String password, String name, Gender gender, UserRole role, boolean active) {
+        this.id = null;
         this.email = email;
         this.password = password;
         this.name = name;
         this.gender = gender;
         this.role = role;
-        this.isActive = isActive;
+        this.active = active;
+    }
+
+    public static class Builder {
+        private String email;
+        private String password;
+        private String name;
+        private Gender gender;
+        private UserRole role;
+        private boolean active;
+
+        public Builder(String email, String password) {
+            this.email = email;
+            this.password = password;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder gender(Gender gender) {
+            this.gender = gender;
+            return this;
+        }
+
+        public Builder role(UserRole role) {
+            this.role = role;
+            return this;
+        }
+
+        public Builder active(boolean active) {
+            this.active = active;
+            return this;
+        }
+
+        public User build() {
+            return new User(email, password, name, gender, role, active);
+        }
     }
 
     public void setId(int id) {
@@ -78,10 +113,10 @@ public class User {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 }

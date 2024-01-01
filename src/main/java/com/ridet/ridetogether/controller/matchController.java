@@ -52,7 +52,10 @@ public class matchController {
         Location destinationLocation = new Location(matchOpenDTO.getDestinationLatitude(), matchOpenDTO.getDestinationLongtitude());
 
         // Ride 생성
-        Ride ride = new Ride(matchService.numOfCurrentRide(), user.getId(), currentLocation, destinationLocation, new Date(), null);
+        Ride ride = new Ride.Builder(matchService.numOfCurrentRide(), user.getId(), currentLocation, destinationLocation)
+                .rideRequestDate(new Date())
+                .matchedRide(null)
+                .build();
 
         MatchOpenResponseDTO returnDTO = new MatchOpenResponseDTO();
 
