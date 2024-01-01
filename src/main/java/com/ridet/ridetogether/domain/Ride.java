@@ -7,15 +7,15 @@ import java.util.Date;
  * <h4>사용자가 목적지를 지정하고 매칭을 누르면 생성되는 객체</h4>
  */
 public class Ride {
-    private int id; // Ride id
+    private Integer id; // Ride id
     private int userId; // 요청자
     private Location currentLocation; // 요청된 위치
     private Location destinationLocation; // 목적지
     private Date rideRequestDate; // 요청시각
     private Ride matchedRide; // 매칭이 된 Ride. if not matched : null
 
-    public Ride(int id, int userId, Location currentLocation, Location destinationLocation, Date rideRequestDate, Ride matchedRide) {
-        this.id = id;
+    public Ride(int userId, Location currentLocation, Location destinationLocation, Date rideRequestDate, Ride matchedRide) {
+        this.id = null;
         this.userId = userId;
         this.currentLocation = currentLocation;
         this.destinationLocation = destinationLocation;
@@ -24,15 +24,13 @@ public class Ride {
     }
 
     public static class Builder {
-        int id;
         int userId;
         Location currentLocation;
         Location destinationLocation;
         Date rideRequestDate;
         Ride matchedRide;
 
-        public Builder(int id, int userId, Location currentLocation, Location destinationLocation) {
-            this.id = id;
+        public Builder(int userId, Location currentLocation, Location destinationLocation) {
             this.userId = userId;
             this.currentLocation = currentLocation;
             this.destinationLocation = destinationLocation;
@@ -49,8 +47,16 @@ public class Ride {
         }
 
         public Ride build() {
-            return new Ride(id, userId, currentLocation, destinationLocation, rideRequestDate, matchedRide);
+            return new Ride(userId, currentLocation, destinationLocation, rideRequestDate, matchedRide);
         }
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public int getUserId() {

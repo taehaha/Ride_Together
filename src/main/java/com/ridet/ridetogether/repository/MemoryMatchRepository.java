@@ -15,7 +15,10 @@ public class MemoryMatchRepository implements MatchRepository {
     @Override
     public int open(Ride ride) {
         int ride_id = store.size();
+
         store.put(ride_id, ride);
+        ride.setId(ride_id);
+
         return ride_id;
     }
 
