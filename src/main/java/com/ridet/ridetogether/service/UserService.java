@@ -24,8 +24,8 @@ public class UserService {
         return;
     }
 
-    public void deleteUser(User user) {
-        userRepository.delete(user);
+    public void deleteUser(int userId) {
+        userRepository.delete(userId);
     }
 
     public Optional<User> getUserById(int id) {

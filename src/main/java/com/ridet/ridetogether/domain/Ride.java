@@ -12,15 +12,17 @@ public class Ride {
     private Location currentLocation; // 요청된 위치
     private Location destinationLocation; // 목적지
     private Date rideRequestDate; // 요청시각
-    private Ride matchedRide; // 매칭이 된 Ride. if not matched : null
+    private boolean matched; // 매칭이 되었는지 확인
 
-    public Ride(int userId, Location currentLocation, Location destinationLocation, Date rideRequestDate, Ride matchedRide) {
+    public Ride() {}
+
+    public Ride(int userId, Location currentLocation, Location destinationLocation, Date rideRequestDate) {
         this.id = null;
         this.userId = userId;
         this.currentLocation = currentLocation;
         this.destinationLocation = destinationLocation;
         this.rideRequestDate = rideRequestDate;
-        this.matchedRide = matchedRide;
+        this.matched = false;
     }
 
     public static class Builder {
@@ -28,26 +30,34 @@ public class Ride {
         Location currentLocation;
         Location destinationLocation;
         Date rideRequestDate;
-        Ride matchedRide;
+        boolean matched;
 
-        public Builder(int userId, Location currentLocation, Location destinationLocation) {
+        public Builder userId(int userId) {
             this.userId = userId;
-            this.currentLocation = currentLocation;
-            this.destinationLocation = destinationLocation;
+            return this;
         }
 
+        public Builder currentLocation(Location currentLocation) {
+            this.currentLocation = currentLocation;
+            return this;
+        }
+
+        public Builder destinationLocation(Location destinationLocation) {
+            this.destinationLocation = destinationLocation;
+            return this;
+        }
         public Builder rideRequestDate(Date date) {
             this.rideRequestDate = date;
             return this;
         }
 
-        public Builder matchedRide(Ride matchedRide) {
-            this.matchedRide = matchedRide;
+        public Builder matched(boolean matched) {
+            this.matched = matched;
             return this;
         }
 
         public Ride build() {
-            return new Ride(userId, currentLocation, destinationLocation, rideRequestDate, matchedRide);
+            return new Ride(userId, currentLocation, destinationLocation, rideRequestDate);
         }
     }
 
@@ -91,11 +101,11 @@ public class Ride {
         this.rideRequestDate = rideRequestDate;
     }
 
-    public Ride getMatchedRide() {
-        return matchedRide;
+    public boolean isMatched() {
+        return matched;
     }
 
-    public void setMatchedRide(Ride matchedRide) {
-        this.matchedRide = matchedRide;
+    public void setMatched(boolean matched) {
+        this.matched = matched;
     }
 }

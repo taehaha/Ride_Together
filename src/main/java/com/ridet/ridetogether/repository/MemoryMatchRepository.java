@@ -1,47 +1,74 @@
 package com.ridet.ridetogether.repository;
 
-import com.ridet.ridetogether.domain.Ride;
-import com.ridet.ridetogether.domain.User;
+import com.ridet.ridetogether.domain.Match;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
+/**
+ * <h2>매칭이 완료된 Ride 간의 관계를 저장하는 Repository</h2>
+ */
 @Repository
 public class MemoryMatchRepository implements MatchRepository {
-    private static Map<Integer, Ride> store = new HashMap<>();
+    // matchId 는 uuid 사용 -> 외부에 노출되는 id이기 때문
+    private Map<String, Match> store = new HashMap<>();
 
     @Override
-    public int open(Ride ride) {
-        int ride_id = store.size();
-
-        store.put(ride_id, ride);
-        ride.setId(ride_id);
-
-        return ride_id;
+    public String add(Match match) {
+        String matchId = UUID.randomUUID().toString();
+        match.setId(matchId);
+        store.put(matchId, match);
+        return matchId;
     }
 
     @Override
-    public void close(int rideId) {
-        store.remove(rideId);
+    public void remove(String id) {
+        store.remove(id);
     }
 
     @Override
-    public Optional<Ride> findByUserId(int id) {
-        Ride ride = store.get(id);
+    public Optional<Match> findByMatchId(String id) {
+        return Optional.of(store.get(id));
+    }
 
-        Optional<Ride> optionalRide;
-        if (ride == null) {
-            optionalRide = Optional.empty();
-        } else {
-            optionalRide = Optional.of(ride);
+    @Override
+    public Optional<Match> findByUserId(int id) {
+        // 저장된 match에서 userId가 있는 match찾기
+        Match returnMatch = null;
+        for (Match match : store.values()) {
+            if (id == match.getUserId1() || id == match.getUserId2()) {
+                returnMatch = match;
+            }
         }
-        return optionalRide;
+
+        if (returnMatch != null) {
+            return Optional.of(returnMatch);
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
-    public int numOfCurrentRide() {
+    public Optional<Match> findByRideId(int id) {
+        Match returnMatch = null;
+        for(Match match : store.values()) {
+            if (id == match.getRideId1() || id == match.getRideId2()) {
+                returnMatch = match;
+            }
+        }
+
+        if (returnMatch != null) {
+            return Optional.of(returnMatch);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public int numOfCurrentMatch() {
         return store.size();
     }
 }

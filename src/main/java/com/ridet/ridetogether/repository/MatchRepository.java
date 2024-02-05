@@ -1,14 +1,17 @@
 package com.ridet.ridetogether.repository;
 
-import com.ridet.ridetogether.domain.Ride;
+import com.ridet.ridetogether.domain.Match;
 
 import java.util.Optional;
 
-//TODO: MatchRepository 인터페이스 작성
+/**
+ * <h2>매칭이 완료된 Ride들의 정보를 관리하는 Repository</h2>
+ */
 public interface MatchRepository {
-
-    public int open(Ride ride);
-    public void close(int rideId);
-    public Optional<Ride> findByUserId(int id);
-    public int numOfCurrentRide();
+    public String add(Match match);
+    public void remove(String id);
+    public Optional<Match> findByMatchId(String id);
+    public Optional<Match> findByUserId(int id);
+    public Optional<Match> findByRideId(int id);
+    public int numOfCurrentMatch();
 }
