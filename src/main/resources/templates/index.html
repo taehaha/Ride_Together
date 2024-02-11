@@ -19,16 +19,85 @@
     </div>
     <!-- 맵 표시 -->
     <div id="map" style="width: 100vw; height: 50vh"></div>
-    <button id="matchButton" style="width: 100vw">매칭</button>
-    <button id="cancelButton" style="width: 100vw" hidden>매칭취소</button>
+    <button th:if="${rideOpened == false}" th:id="matchButton" th:value="match" style="width: 100vw">매칭</button>
+    <button th:if="${rideOpened == true}" th:id="matchButton" th:value="cancelMatch" style="width: 100vw">매칭 취소</button>
+
 </body>
 
 <script>
+    /* 함수들 */
+    const findMatchPoll = async () => {
+        await poll(() => {
+            fetch("/ride/polling", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(res => {
+                    if (res.status === 410) {
+                        console.log("Ride canceled");
+                    } else if (res.status === 404) {
+                        console.log("Match not found");
+                    } else {
+                        return res.json();
+                    }
+                })
+                .then((data) => {
+                    console.log("Match Success. user1 : " + data.userId1 + " user2 : " + data.userId2);
+                })
+                .catch((err) => {
+
+                });
+        }, 5000, 100);
+    }
+
+    // polling 함수
+    const poll = (func, timeout, maxAttempts = -1) => {
+        if (maxAttempts === 0) {
+            return;
+        }
+        setTimeout(async () => {
+            try {
+                await func();
+            } catch (err) {
+                console.error(err);
+            }
+            poll(func, timeout, maxAttempts - 1);
+        }, timeout);
+    }
+
+    // 매칭 버튼 보이기, 숨기기
+    const showMatchButton = () => {
+        let matchButton = document.getElementById("matchButton");
+
+        if (matchButton.value === "cancelMatch") {
+            matchButton.value = "match";
+            matchButton.innerText = "매칭";
+        }
+    }
+
+    const showMatchCancelButton = () => {
+        let matchButton = document.getElementById("matchButton");
+
+        if (matchButton.value === "match") {
+            matchButton.value = "cancelMatch";
+            matchButton.innerText = "매칭 취소";
+        }
+    }
+</script>
+
+<script>
     //TODO: javascript 정리
-    /**
-     * <h2>Kakao Map 관련 스크립트</h2>
-     *
-     */
+
+    /* 로그인된 아이디로 ride가 등록되어 있을 경우 match polling 시작 */
+    if (document.getElementById("matchButton").value === "cancelMatch") {
+        console.log("poll started");
+        findMatchPoll();
+    }
+
+
+    /* <h2>Kakao Map 관련 스크립트</h2> */
     // 경로표시 참고하기
     let container = document.getElementById("map"); // 지도 표시 element
 
@@ -115,111 +184,55 @@
     }
 
     // Event Listeners
-    // 매칭 시작
     document.getElementById("matchButton").addEventListener("click", async () => {
-        let position = map.getCenter();
+        // 매칭 시작
+        if (document.getElementById("matchButton").value === "match") {
+            let position = map.getCenter();
 
-        // DTO에 들어갈 json data
-        let data = {
-            currentLatitude: currentPosition.getLat().toString(),
-            currentLongtitude: currentPosition.getLng().toString(),
-            destinationLatitude: position.getLat().toString(),
-            destinationLongtitude: position.getLng().toString()
-        }
-
-        // API 요청
-        fetch("/ride/open", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-Type": "application/json"
+            // DTO에 들어갈 json data
+            let data = {
+                currentLatitude: currentPosition.getLat().toString(),
+                currentLongtitude: currentPosition.getLng().toString(),
+                destinationLatitude: position.getLat().toString(),
+                destinationLongtitude: position.getLng().toString()
             }
-        })
-            .then(res => res.json())
-            .then((data) => {
-                // 테스트용
-                alert(data.success + " " + data.numOfRide);
-                showMatchCancelButton();
-            })
-            .catch((error) => {
-                console.error(error);
-                alert("로그인이 필요합니다.");
-            });
 
-        // 매칭 polling
-        await polling(() => {
-            fetch("/ride/polling", {
+            // API 요청
+            fetch("/ride/open", {
                 method: "POST",
+                body: JSON.stringify(data),
                 headers: {
                     "Content-Type": "application/json"
                 }
-                })
-                .then(res => {
-                    if (res.status === 410) {
-                        console.log("Ride canceled");
-                    } else if (res.status === 404) {
-                        console.log("Match not found");
-                    } else {
-                        return res.json();
-                    }
-                })
-                .then((data) => {
-                    console.log("Match Success. user1 : " + data.userId1 + " user2 : " + data.userId2);
-                })
-                .catch((err) => {
-
-                });
-        }, 5000, 100);
-    });
-
-    document.getElementById("cancelButton").addEventListener("click", () => {
-        fetch("/ride/close", {
-            method: "POST",
-        })
-            .then(() => {
-                alert("매칭이 취소되었습니다.")
-                showMatchButton();
             })
-            .catch((error) => {
-                console.error(error);
-                alert("로그인이 필요합니다.");
-            });
+                .then(res => res.json())
+                .then((data) => {
+                    // 테스트용
+                    alert(data.success + " " + data.numOfRide);
+                    showMatchCancelButton();
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert("로그인이 필요합니다.");
+                });
 
+            // match poll 시작
+            await findMatchPoll();
+        } else { // 매칭 종료
+            fetch("/ride/close", {
+                method: "POST",
+            })
+                .then(() => {
+                    alert("매칭이 취소되었습니다.")
+                    showMatchButton();
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert("로그인이 필요합니다.");
+                });
+        }
 
     });
 </script>
 
-<script>
-    // polling 함수
-    const polling = (func, timeout, maxAttempts = -1) => {
-        if (maxAttempts === 0) {
-            return;
-        }
-        setTimeout(async () => {
-            try {
-                await func();
-            } catch (err) {
-                console.error(err);
-            }
-            polling(func, timeout, maxAttempts - 1);
-        }, timeout);
-    }
-
-    // 매칭 버튼 보이기, 숨기기
-    const showMatchButton = () => {
-        let matchButton = document.getElementById("matchButton");
-        let cancelButton = document.getElementById("cancelButton");
-
-        matchButton.hidden = false;
-        cancelButton.hidden = true;
-    }
-
-    const showMatchCancelButton = () => {
-        let matchButton = document.getElementById("matchButton");
-        let cancelButton = document.getElementById("cancelButton");
-
-        matchButton.hidden = true;
-        cancelButton.hidden = false;
-    }
-</script>
 </html>
