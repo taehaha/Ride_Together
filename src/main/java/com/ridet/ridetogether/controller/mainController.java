@@ -29,18 +29,26 @@ public class mainController {
     public String index(Model model, HttpSession session) {
         Integer id = (Integer) session.getAttribute("id");
 
-        // 로그인이 된 상태일 경우
-        if (id == null) {
-            return "index";
+        // 로그인 여부 확인
+        if (id != null) {
+            // attribute에 user 추가
+            userService.getUserById(id).ifPresent(user -> {
+                model.addAttribute("user", user);
+            });
+
+            // 로그인된 User가 ride를 가지고 있는지 확인
+            model.addAttribute(
+                    "rideOpened",
+                    rideService.findRideByUserId(id).isPresent()
+            );
+        } else {
+            // attribute에 user 추가
+            model.addAttribute("user", null);
+            model.addAttribute(
+                    "rideOpened",
+                    false
+            );
         }
-
-        userService.getUserById(id).ifPresent(user ->
-                model.addAttribute("user", user));
-
-        model.addAttribute(
-                "rideOpened",
-                rideService.findRideByUserId(id).isPresent()
-        );
 
         return "index";
     }

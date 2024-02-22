@@ -35,12 +35,10 @@
                 }
             })
                 .then(res => {
-                    if (res.status === 410) {
-                        console.log("Ride canceled");
-                    } else if (res.status === 404) {
-                        console.log("Match not found");
-                    } else {
-                        return res.json();
+                    switch (res.status) {
+                        case 404: break; // 매치를 찾지 못했을 경우
+                        case 410: break; // Ride가 취소되었을 경우
+                        default: return res.json();
                     }
                 })
                 .then((data) => {
@@ -87,107 +85,45 @@
     }
 </script>
 
-<script>
-    //TODO: javascript 정리
-
+<script type="module">
+    import KakaoMap from "/js/KakaoMap.js";
     /* 로그인된 아이디로 ride가 등록되어 있을 경우 match polling 시작 */
     if (document.getElementById("matchButton").value === "cancelMatch") {
         console.log("poll started");
         findMatchPoll();
     }
 
-
-    /* <h2>Kakao Map 관련 스크립트</h2> */
-    // 경로표시 참고하기
+    /* Kakao Map 관련 스크립트 */
     let container = document.getElementById("map"); // 지도 표시 element
-
-    let map; // kakao map
+    let mapInstance;
     let currentPosition;
 
-    let currentPositionMarker;
-    let centerPositionMarker;
-
-
-    // 위치서비스
+    // 현재 위치 가져온 후 Map 생성
     if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                // 현재 위치
                 let coords = position.coords;
                 currentPosition = new kakao.maps.LatLng(coords.latitude, coords.longitude);
 
-                // map을 위한 options
-                let options = {
+                mapInstance = new KakaoMap(container, {
                     center: currentPosition,
                     level: 3,
-                    draggable: true,
-                }
-                map = new kakao.maps.Map(container, options);
-
-                // marker init
-                currentPositionMarker = new kakao.maps.Marker({
-                    title: "현재 위치",
-                    map: map,
-                    position: currentPosition,
-                    draggable: false,
-                    clickable: false,
-                });
-                centerPositionMarker = new kakao.maps.Marker({
-                    title: "목적지 위치",
-                    map: map,
-                    position: map.getCenter(),
-                    draggable: false,
-                    clickable: false,
+                    draggable: true
                 });
 
-                //InfoWindow 띄우기
-                (new kakao.maps.InfoWindow({
-                    position: currentPosition,
-                    content: "현재 위치"
-                })).open(map, currentPositionMarker);
-
-                // map 중앙좌표 변경 Listener
-                kakao.maps.event.addListener(map, 'center_changed', () => {
-                    centerPositionMarker.setMap(null);
-                    centerPositionMarker = new kakao.maps.Marker({
-                        title: "목적지 위치",
-                        map: map,
-                        position: map.getCenter(),
-                        draggable: false,
-                        clickable: false,
-                    });
-                    centerPositionMarker.setMap(map);
-                });
-
-            });
-
-        // 현재 좌표 변경시 marker 좌표 이동 Listener
-        const watchID = navigator.geolocation.watchPosition((position) => {
-            let coords = position.coords;
-            let currentLatLng = new kakao.maps.LatLng(coords.latitude, coords.longitude);
-            // map.panTo(currentLatLng); // 시점 이동
-
-            currentPositionMarker.setMap(null); // 기존에 표시된 marker 제거
-
-            currentPositionMarker = new kakao.maps.Marker({
-                map: map,
-                position: currentLatLng,
-                draggable: false,
-                clickable: false,
-            });
-
-            currentPositionMarker.setMap(map); // 맵에 marker 생성
-        });
-
-    } else { // 위치서비스 사용 불가할 때
-        container.innerText = `위치정보를 활성화해주세요.`;
+                mapInstance.markMyPosition(currentPosition);
+                mapInstance.markCenterPosition();
+            }
+        )
+    } else {
+        alert("위치정보를 허용해주세요.")
     }
 
     // Event Listeners
     document.getElementById("matchButton").addEventListener("click", async () => {
         // 매칭 시작
         if (document.getElementById("matchButton").value === "match") {
-            let position = map.getCenter();
+            let position = mapInstance.getCenterPosition();
 
             // DTO에 들어갈 json data
             let data = {
@@ -234,5 +170,4 @@
 
     });
 </script>
-
 </html>
