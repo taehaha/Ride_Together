@@ -1,5 +1,6 @@
 package com.ridet.ridetogether.controller;
 
+import com.ridet.ridetogether.domain.Ride;
 import com.ridet.ridetogether.domain.User;
 import com.ridet.ridetogether.repository.UserRepository;
 import com.ridet.ridetogether.service.RideService;
@@ -24,31 +25,24 @@ public class mainController {
         this.rideService = rideService;
     }
 
-    //TODO: 새로고침 대비 필요
     @GetMapping("/")
     public String index(Model model, HttpSession session) {
         Integer id = (Integer) session.getAttribute("id");
 
-        // 로그인 여부 확인
-        if (id != null) {
-            // attribute에 user 추가
-            userService.getUserById(id).ifPresent(user -> {
-                model.addAttribute("user", user);
-            });
+        User user;
+        Ride ride;
 
-            // 로그인된 User가 ride를 가지고 있는지 확인
-            model.addAttribute(
-                    "rideOpened",
-                    rideService.findRideByUserId(id).isPresent()
-            );
+        // User, Ride 정보 주입
+        if (id != null) {
+            user = userService.getUserById(id).orElse(null);
+            ride = rideService.findRideByUserId(id).orElse(null);
         } else {
-            // attribute에 user 추가
-            model.addAttribute("user", null);
-            model.addAttribute(
-                    "rideOpened",
-                    false
-            );
+            user = null;
+            ride = null;
         }
+
+        model.addAttribute("user", user);
+        model.addAttribute("ride", ride);
 
         return "index";
     }

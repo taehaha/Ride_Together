@@ -5,12 +5,14 @@ import org.springframework.http.HttpStatus;
 
 public class MatchInfoDTO {
     String matchId;
-    int userId1;
-    int userId2;
+    Integer userId1;
+    Integer userId2;
     boolean matchActivated;
 
     Location departure;
     Location destination;
+    Location matchDeparture;
+    Location matchDestination;
 
     HttpStatus status;
 
@@ -22,19 +24,19 @@ public class MatchInfoDTO {
         this.matchId = matchId;
     }
 
-    public int getUserId1() {
+    public Integer getUserId1() {
         return userId1;
     }
 
-    public void setUserId1(int userId1) {
+    public void setUserId1(Integer userId1) {
         this.userId1 = userId1;
     }
 
-    public int getUserId2() {
+    public Integer getUserId2() {
         return userId2;
     }
 
-    public void setUserId2(int userId2) {
+    public void setUserId2(Integer userId2) {
         this.userId2 = userId2;
     }
 
@@ -62,11 +64,19 @@ public class MatchInfoDTO {
         this.destination = destination;
     }
 
-    public HttpStatus getStatus() {
-        return status;
+    public Location getMatchDeparture() {
+        return matchDeparture;
     }
 
-    public void setStatus(HttpStatus status) {
-        this.status = status;
+    public void setMatchDeparture(Location matchDeparture) {
+        this.matchDeparture = matchDeparture;
+    }
+
+    public Location getMatchDestination() {
+        return matchDestination;
+    }
+
+    public void setMatchDestination(Location matchDestination) {
+        this.matchDestination = matchDestination;
     }
 }

@@ -1,14 +1,29 @@
 export default class KakaoMap {
+    /* fields */
     map;
     container;
     myPositionMarker;
-    centerPositionMarker;
+    destinationPositionMarker;
 
+    /* Handler */
+    centerChangedHandler = () => {
+        this.destinationPositionMarker.setMap(null);
+        this.destinationPositionMarker = new kakao.maps.Marker({
+            title: "목적지 위치",
+            map: this.map,
+            position: this.map.getCenter(),
+            draggable: false,
+            clickable: false,
+        });
+    }
+
+    /* constructor */
     constructor(container, options) {
         this.map = new kakao.maps.Map(container, options);
         this.container = container;
     }
 
+    /* methods */
     markMyPosition(kakaoLatLng) {
         this.myPositionMarker = new kakao.maps.Marker({
             title: "현재 위치",
@@ -23,30 +38,28 @@ export default class KakaoMap {
         this.myPositionMarker = null;
     }
 
-    markCenterPosition() {
-        this.centerPositionMarker = new kakao.maps.Marker({
+    markDestinationPosition(kakaoLatLng) {
+        this.destinationPositionMarker = new kakao.maps.Marker({
             title: "목적지 위치",
             map: this.map,
-            position: this.map.getCenter(),
+            position: kakaoLatLng,
             draggable: false,
             clickable: false,
         });
-
-        // kakao Map 상 중앙이 변경될경우 center 마커도 중앙으로 이동
-        kakao.maps.event.addListener(this.map, 'center_changed', () => {
-            this.centerPositionMarker.setMap(null);
-            this.centerPositionMarker = new kakao.maps.Marker({
-                title: "목적지 위치",
-                map: this.map,
-                position: this.map.getCenter(),
-                draggable: false,
-                clickable: false,
-            });
-        });
     }
 
-    unmarkCenterPosition() {
-        this.centerPositionMarker = null;
+    unmarkDestinationPosition() {
+        this.destinationPositionMarker = null;
+    }
+
+    moveDestinationPosition() {
+        // kakao Map 상 중앙이 변경될경우 center 마커도 중앙으로 이동
+        kakao.maps.event.addListener(this.map, 'center_changed', this.centerChangedHandler);
+
+    }
+
+    stopDestinationPosition() {
+        kakao.maps.event.removeListener(this.map, 'center_changed', this.centerChangedHandler);
     }
 
     getCenterPosition() {

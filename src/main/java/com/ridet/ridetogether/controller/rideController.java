@@ -98,7 +98,7 @@ public class rideController {
 
 
     // 본인의 매칭 status 조회
-    @PostMapping("/polling")
+    @PostMapping("/state")
     public ResponseEntity<MatchInfoDTO> matchedPolling(HttpSession session) {
         // 로그인 검증
         Integer id = (Integer) session.getAttribute("id");
@@ -110,28 +110,48 @@ public class rideController {
 
         // 로그인된 user의 Ride가 존재하는지 확인
         Ride currentRide = rideService.findRideByUserId(id).orElse(null);
+
         // Match 검색
         Match currentMatch = rideService.findMatchByUserId(id).orElse(null);
 
         MatchInfoDTO returnDTO = new MatchInfoDTO();
-        if (currentRide == null) {
+
+        // MatchInfoDTO의 Ride 관련 field 세팅
+        if (currentRide == null) { // Ride가 없을 경우
             result = new ResponseEntity<>(HttpStatus.GONE);
-            returnDTO.setStatus(HttpStatus.GONE);
-        }
-        else if (currentMatch == null) {
-            result = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            returnDTO.setStatus(HttpStatus.NOT_FOUND);
+//            returnDTO.setStatus(HttpStatus.GONE);
         } else {
-            returnDTO.setMatchId(currentMatch.getId());
-            returnDTO.setUserId1(currentMatch.getUserId1());
-            returnDTO.setUserId2(currentMatch.getUserId2());
-            returnDTO.setDestination(currentMatch.getDeparture());
-            returnDTO.setDeparture(currentMatch.getDestination());
-            returnDTO.setMatchActivated(true);
+            returnDTO.setDestination(currentRide.getCurrentLocation());
+            returnDTO.setDeparture(currentRide.getDestinationLocation());
 
             result = ResponseEntity.ok(returnDTO);
+        }
+
+
+        // MatchInfoDTO의 Match 관련 field 세팅
+        if (currentMatch == null) { // Match가 안됐을 경우
+            returnDTO.setMatchId(null);
+
+            returnDTO.setUserId1(null);
+            returnDTO.setUserId2(null);
+
+            returnDTO.setMatchActivated(true);
+
+            returnDTO.setMatchDestination(null);
+            returnDTO.setMatchDeparture(null);
+        } else {
+            returnDTO.setMatchId(currentMatch.getId());
+
+            returnDTO.setUserId1(currentMatch.getUserId1());
+            returnDTO.setUserId2(currentMatch.getUserId2());
+
+            returnDTO.setMatchActivated(true);
+
+            returnDTO.setMatchDeparture(currentMatch.getDeparture());
+            returnDTO.setMatchDestination(currentMatch.getDestination());
         }
 
         return result;
     }
 }
+

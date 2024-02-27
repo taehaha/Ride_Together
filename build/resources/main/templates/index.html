@@ -19,30 +19,39 @@
     </div>
     <!-- 맵 표시 -->
     <div id="map" style="width: 100vw; height: 50vh"></div>
-    <button th:if="${rideOpened == false}" th:id="matchButton" th:value="match" style="width: 100vw">매칭</button>
-    <button th:if="${rideOpened == true}" th:id="matchButton" th:value="cancelMatch" style="width: 100vw">매칭 취소</button>
+    <!-- 맵 Destination Marker 위치 관련 -->
+    <input id="destinationLatitude" type="hidden" th:if="${ride == null}" value="">
+    <input id="destinationLatitude" type="hidden" th:if="${ride != null}" th:value="${ride.getDestinationLocation().getLatitude()}">
+    <input id="destinationLongtitude" type="hidden" th:if="${ride == null}" value="">
+    <input id="destinationLongtitude" type="hidden" th:if="${ride != null}" th:value="${ride.getDestinationLocation().getLongtitude()}">
+    <!-- 매칭 버튼 관련 -->
+    <button th:if="${ride == null}" th:id="matchButton" th:value="match" style="width: 100vw">매칭</button>
+    <button th:if="${ride != null}" th:id="matchButton" th:value="cancelMatch" style="width: 100vw">매칭 취소</button>
 
 </body>
 
 <script>
     /* 함수들 */
+
     const findMatchPoll = async () => {
         await poll(() => {
-            fetch("/ride/polling", {
+            fetch("/ride/state", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 }
             })
                 .then(res => {
+                    console.log("match polled");
                     switch (res.status) {
-                        case 404: break; // 매치를 찾지 못했을 경우
                         case 410: break; // Ride가 취소되었을 경우
                         default: return res.json();
                     }
                 })
                 .then((data) => {
-                    console.log("Match Success. user1 : " + data.userId1 + " user2 : " + data.userId2);
+                    if (data.matchId !== null) {
+                        console.log("Match Success. user1 : " + data.userId1 + " user2 : " + data.userId2);
+                    }
                 })
                 .catch((err) => {
 
@@ -97,6 +106,7 @@
     let container = document.getElementById("map"); // 지도 표시 element
     let mapInstance;
     let currentPosition;
+    let destinationPosition;
 
     // 현재 위치 가져온 후 Map 생성
     if ("geolocation" in navigator) {
@@ -105,14 +115,29 @@
                 let coords = position.coords;
                 currentPosition = new kakao.maps.LatLng(coords.latitude, coords.longitude);
 
+                //Map Instance 생성
                 mapInstance = new KakaoMap(container, {
                     center: currentPosition,
                     level: 3,
                     draggable: true
                 });
 
+                // ride가 등록되어 있을 경우 해당 위치로 destinationPosition을 설정
+                let destinationLatitude = document.getElementById("destinationLatitude").value;
+                let destinationLongtitude = document.getElementById("destinationLongtitude").value;
+
+                // destinationPosition 표시
+                if (destinationLatitude === "") {
+                    destinationPosition = mapInstance.getCenterPosition();
+                    mapInstance.moveDestinationPosition();
+                } else {
+                    destinationPosition = new kakao.maps.LatLng(destinationLatitude, destinationLongtitude);
+                    mapInstance.stopDestinationPosition();
+                }
+
+                // 지도에 내 위치, 목적지 위치 Marker 표시
                 mapInstance.markMyPosition(currentPosition);
-                mapInstance.markCenterPosition();
+                mapInstance.markDestinationPosition(destinationPosition);
             }
         )
     } else {
@@ -145,21 +170,21 @@
                 .then((data) => {
                     // 테스트용
                     alert(data.success + " " + data.numOfRide);
+                    mapInstance.stopDestinationPosition();
                     showMatchCancelButton();
+                    findMatchPoll();
                 })
                 .catch((error) => {
                     console.error(error);
                     alert("로그인이 필요합니다.");
                 });
-
-            // match poll 시작
-            await findMatchPoll();
         } else { // 매칭 종료
             fetch("/ride/close", {
                 method: "POST",
             })
                 .then(() => {
                     alert("매칭이 취소되었습니다.")
+                    mapInstance.moveDestinationPosition();
                     showMatchButton();
                 })
                 .catch((error) => {
