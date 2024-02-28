@@ -33,47 +33,6 @@
 <script>
     /* 함수들 */
 
-    const findMatchPoll = async () => {
-        await poll(() => {
-            fetch("/ride/state", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(res => {
-                    console.log("match polled");
-                    switch (res.status) {
-                        case 410: break; // Ride가 취소되었을 경우
-                        default: return res.json();
-                    }
-                })
-                .then((data) => {
-                    if (data.matchId !== null) {
-                        console.log("Match Success. user1 : " + data.userId1 + " user2 : " + data.userId2);
-                    }
-                })
-                .catch((err) => {
-
-                });
-        }, 5000, 100);
-    }
-
-    // polling 함수
-    const poll = (func, timeout, maxAttempts = -1) => {
-        if (maxAttempts === 0) {
-            return;
-        }
-        setTimeout(async () => {
-            try {
-                await func();
-            } catch (err) {
-                console.error(err);
-            }
-            poll(func, timeout, maxAttempts - 1);
-        }, timeout);
-    }
-
     // 매칭 버튼 보이기, 숨기기
     const showMatchButton = () => {
         let matchButton = document.getElementById("matchButton");
@@ -96,17 +55,22 @@
 
 <script type="module">
     import KakaoMap from "/js/KakaoMap.js";
+    import Poll from "/js/Poll.js";
+
+    let container = document.getElementById("map"); // 지도 표시 element
+
+    let mapInstance;
+    let pollInstance = new Poll("/ride/state");
+
+    let currentPosition;
+    let destinationPosition;
+
     /* 로그인된 아이디로 ride가 등록되어 있을 경우 match polling 시작 */
     if (document.getElementById("matchButton").value === "cancelMatch") {
         console.log("poll started");
-        findMatchPoll();
+        pollInstance.startPoll();
     }
 
-    /* Kakao Map 관련 스크립트 */
-    let container = document.getElementById("map"); // 지도 표시 element
-    let mapInstance;
-    let currentPosition;
-    let destinationPosition;
 
     // 현재 위치 가져온 후 Map 생성
     if ("geolocation" in navigator) {
@@ -172,7 +136,7 @@
                     alert(data.success + " " + data.numOfRide);
                     mapInstance.stopDestinationPosition();
                     showMatchCancelButton();
-                    findMatchPoll();
+                    pollInstance.startPoll();
                 })
                 .catch((error) => {
                     console.error(error);
@@ -186,6 +150,7 @@
                     alert("매칭이 취소되었습니다.")
                     mapInstance.moveDestinationPosition();
                     showMatchButton();
+                    pollInstance.stopPoll();
                 })
                 .catch((error) => {
                     console.error(error);
