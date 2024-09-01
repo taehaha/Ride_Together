@@ -14,15 +14,19 @@ public class Ride {
     private Date rideRequestDate; // 요청시각
     private boolean matched; // 매칭이 되었는지 확인
 
-    public Ride() {}
+    public Ride() {
+        currentLocation = new Location.Builder().build();
+        destinationLocation = new Location.Builder().build();
+    }
 
-    public Ride(int userId, Location currentLocation, Location destinationLocation, Date rideRequestDate) {
+    public Ride(int userId, Location currentLocation, Location destinationLocation, Date rideRequestDate, boolean matched) {
+        super();
         this.id = null;
         this.userId = userId;
         this.currentLocation = currentLocation;
         this.destinationLocation = destinationLocation;
         this.rideRequestDate = rideRequestDate;
-        this.matched = false;
+        this.matched = matched;
     }
 
     public static class Builder {
@@ -57,7 +61,7 @@ public class Ride {
         }
 
         public Ride build() {
-            return new Ride(userId, currentLocation, destinationLocation, rideRequestDate);
+            return new Ride(userId, currentLocation, destinationLocation, rideRequestDate, false);
         }
     }
 

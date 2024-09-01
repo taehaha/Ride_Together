@@ -1,8 +1,7 @@
-package com.ridet.ridetogether.repository;
+package com.ridet.ridetogether.domain.dao;
 
 import com.ridet.ridetogether.domain.User;
 import com.ridet.ridetogether.exception.UserEmailDuplicatedException;
-import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
@@ -12,7 +11,7 @@ public class MemoryUserRepository implements UserRepository {
     private static long sequence = 0L;
 
     @Override
-    public User save(User user) throws UserEmailDuplicatedException {
+    public User add(User user) throws UserEmailDuplicatedException {
         // User 중복 확인
         boolean isDuplicated = this.getUserByEmail(user.getEmail()).isPresent();
         if (isDuplicated) {

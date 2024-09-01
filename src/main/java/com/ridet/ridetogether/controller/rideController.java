@@ -6,7 +6,6 @@ import com.ridet.ridetogether.domain.Ride;
 import com.ridet.ridetogether.domain.dto.*;
 import com.ridet.ridetogether.exception.RideAlreadyMatchedException;
 import com.ridet.ridetogether.exception.RideAlreadyOpenedException;
-import com.ridet.ridetogether.exception.RideNotFoundException;
 import com.ridet.ridetogether.service.RideService;
 import com.ridet.ridetogether.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -32,8 +31,7 @@ public class rideController {
 
     // Ride 생성 및 기존 Ride와 매칭 가능한지 확인
     @PostMapping("/open")
-    public ResponseEntity<MatchOpenResponseDTO> matchOpen(@RequestBody MatchOpenDTO matchOpenDTO,
-                                    HttpSession session) throws RideAlreadyOpenedException {
+    public ResponseEntity<MatchOpenResponseDTO> matchOpen(@RequestBody MatchOpenDTO matchOpenDTO, HttpSession session) throws RideAlreadyOpenedException {
         // session에서 user id 가져오기
         Integer id = (Integer) session.getAttribute("id");
 
@@ -43,8 +41,15 @@ public class rideController {
         }
 
         // DTO로부터 현재위치, 목적지 가져오기
-        Location currentLocation = new Location(matchOpenDTO.getCurrentLatitude(), matchOpenDTO.getCurrentLongtitude());
-        Location destinationLocation = new Location(matchOpenDTO.getDestinationLatitude(), matchOpenDTO.getDestinationLongtitude());
+        Location currentLocation = new Location.Builder()
+                                                .latitude(matchOpenDTO.getCurrentLatitude())
+                                                .longitude(matchOpenDTO.getCurrentLongtitude())
+                                                .build();
+                                                        
+        Location destinationLocation = new Location.Builder()
+                                                    .latitude(matchOpenDTO.getCurrentLatitude())
+                                                    .longitude(matchOpenDTO.getCurrentLongtitude())
+                                                    .build();
 
         // Ride 생성
         Ride ride = new Ride.Builder()
@@ -55,21 +60,21 @@ public class rideController {
                 .matched(false)
                 .build();
 
-        MatchOpenResponseDTO returnDTO = new MatchOpenResponseDTO();
+        MatchOpenResponseDTO responseDTO = new MatchOpenResponseDTO();
 
         // 매칭
         try {
             rideService.rideOpen(ride); //ride 생성
             rideService.matchLatestRide(); // 매칭 시작
-            returnDTO.setSuccess(true);
+            responseDTO.setSuccess(true);
         } catch (RideAlreadyOpenedException | RideAlreadyMatchedException e) {
-            returnDTO.setSuccess(false);
+            responseDTO.setSuccess(false);
             e.printStackTrace();
             System.err.println(e.getMessage());
         }
-        returnDTO.setNumOfRide(rideService.numOfCurrentRide());
+        responseDTO.setNumOfRide(rideService.numOfCurrentRide());
 
-        return ResponseEntity.ok(returnDTO);
+        return ResponseEntity.ok(responseDTO);
     }
 
     @PostMapping("/close")

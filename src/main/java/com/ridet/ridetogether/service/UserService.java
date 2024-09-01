@@ -1,7 +1,7 @@
 package com.ridet.ridetogether.service;
 
 import com.ridet.ridetogether.domain.User;
-import com.ridet.ridetogether.repository.UserRepository;
+import com.ridet.ridetogether.domain.dao.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class UserService {
     }
 
     public void createUser(User user) {
-        userRepository.save(user);
+        userRepository.add(user);
     }
 
     public void updateUser(User user) {

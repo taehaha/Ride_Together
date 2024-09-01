@@ -1,26 +1,25 @@
-package com.ridet.ridetogether.repository;
+package com.ridet.ridetogether.domain.dao;
 
 import com.ridet.ridetogether.domain.Ride;
 import com.ridet.ridetogether.exception.RideNotFoundException;
-import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Repository
+//@Repository
 public class MemoryRideRepository implements RideRepository {
     private static Map<Integer, Ride> store = new HashMap<>();
 
 
     @Override
-    public int open(Ride ride) {
+    public Ride open(Ride ride) {
         int ride_id = store.size();
 
         store.put(ride_id, ride);
         ride.setId(ride_id);
 
-        return ride_id;
+        return ride;
     }
 
     @Override
@@ -72,7 +71,7 @@ public class MemoryRideRepository implements RideRepository {
         return optionalRide;
     }
     @Override
-    public Optional<Ride> findByUserId(int id) {
+    public Optional<Ride> findRideByUserId(int id) {
         Ride ride = null;
         for (Ride tempRide : store.values()) {
             if (tempRide.getUserId() == id) {

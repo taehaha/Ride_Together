@@ -1,4 +1,4 @@
-package com.ridet.ridetogether.repository;
+package com.ridet.ridetogether.domain.dao;
 
 import com.ridet.ridetogether.domain.Match;
 

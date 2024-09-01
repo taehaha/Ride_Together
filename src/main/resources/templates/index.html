@@ -20,10 +20,10 @@
     <!-- 맵 표시 -->
     <div id="map" style="width: 100vw; height: 50vh"></div>
     <!-- 맵 Destination Marker 위치 관련 -->
-    <input id="destinationLatitude" type="hidden" th:if="${ride == null}" value="">
-    <input id="destinationLatitude" type="hidden" th:if="${ride != null}" th:value="${ride.getDestinationLocation().getLatitude()}">
-    <input id="destinationLongtitude" type="hidden" th:if="${ride == null}" value="">
-    <input id="destinationLongtitude" type="hidden" th:if="${ride != null}" th:value="${ride.getDestinationLocation().getLongtitude()}">
+    <input th:id="destinationLatitude" type="hidden" th:if="${ride == null}" value="">
+    <input th:id="destinationLatitude" type="hidden" th:if="${ride != null}" th:value="${ride.getDestinationLocation().getLatitude()}">
+    <input th:id="destinationLongtitude" type="hidden" th:if="${ride == null}" value="">
+    <input th:id="destinationLongtitude" type="hidden" th:if="${ride != null}" th:value="${ride.getDestinationLocation().getLongitude()}">
     <!-- 매칭 버튼 관련 -->
     <button th:if="${ride == null}" th:id="matchButton" th:value="match" style="width: 100vw">매칭</button>
     <button th:if="${ride != null}" th:id="matchButton" th:value="cancelMatch" style="width: 100vw">매칭 취소</button>
@@ -150,7 +150,7 @@
                     alert("매칭이 취소되었습니다.")
                     mapInstance.moveDestinationPosition();
                     showMatchButton();
-                    pollInstance.stopPoll();ㅂ
+                    pollInstance.stopPoll();
                 })
                 .catch((error) => {
                     console.error(error);

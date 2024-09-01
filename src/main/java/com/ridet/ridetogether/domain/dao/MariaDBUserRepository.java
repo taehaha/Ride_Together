@@ -1,7 +1,8 @@
-package com.ridet.ridetogether.repository;
+package com.ridet.ridetogether.domain.dao;
 
 import com.ridet.ridetogether.domain.User;
 import com.ridet.ridetogether.domain.mapper.UserMapper;
+import com.ridet.ridetogether.exception.UserEmailDuplicatedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -18,15 +19,22 @@ public class MariaDBUserRepository implements UserRepository {
     }
 
     @Override
-    public User save(User user) {
-        int id = this.userMapper.add(
-                user.getEmail(),
-                user.getPassword(),
-                user.getName(),
-                user.getGender().getKey(),
-                user.getRole().getKey(),
-                1);
-        user.setId(id);
+    public User add(User user) throws UserEmailDuplicatedException {
+        // 같은 email을 가진 User 검색
+        Optional<User> sameEmailUser = this.getUserByEmail(user.getEmail());
+
+        if (sameEmailUser.isPresent()) {
+            throw new UserEmailDuplicatedException(user.getEmail() + " EMAIL 중복입니다.");
+        } else {
+            int id = this.userMapper.add(
+                    user.getEmail(),
+                    user.getPassword(),
+                    user.getName(),
+                    user.getGender().getKey(),
+                    user.getRole().getKey(),
+                    1);
+            user.setId(id);
+        }
         return user;
     }
 

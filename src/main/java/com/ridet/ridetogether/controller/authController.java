@@ -6,7 +6,6 @@ import com.ridet.ridetogether.domain.User;
 import com.ridet.ridetogether.domain.dto.SigninFormDTO;
 import com.ridet.ridetogether.domain.dto.SignupFormDTO;
 import com.ridet.ridetogether.exception.UserEmailDuplicatedException;
-import com.ridet.ridetogether.repository.UserRepository;
 import com.ridet.ridetogether.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;

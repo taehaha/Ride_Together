@@ -7,8 +7,8 @@ import com.ridet.ridetogether.exception.MatchNotFoundException;
 import com.ridet.ridetogether.exception.RideAlreadyMatchedException;
 import com.ridet.ridetogether.exception.RideAlreadyOpenedException;
 import com.ridet.ridetogether.exception.RideNotFoundException;
-import com.ridet.ridetogether.repository.MatchRepository;
-import com.ridet.ridetogether.repository.RideRepository;
+import com.ridet.ridetogether.domain.dao.MatchRepository;
+import com.ridet.ridetogether.domain.dao.RideRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,18 +29,18 @@ public class RideService {
         this.matchRepository = matchRepository;
     }
 
-    public int rideOpen(Ride ride) throws RideAlreadyOpenedException, RideAlreadyMatchedException {
+    public void rideOpen(Ride ride) throws RideAlreadyOpenedException, RideAlreadyMatchedException {
         // 이미 매칭이 완료된 Ride일 경우
         if (ride.isMatched()) {
             throw new RideAlreadyMatchedException("이미 매칭이 된 Ride 입니다. user id = " + ride.getUserId());
         }
 
         // User가 이미 Ride를 open했을 경우
-        if (rideRepository.findByUserId(ride.getUserId()).isPresent()) {
+        if (rideRepository.findRideByUserId(ride.getUserId()).isPresent()) {
             throw new RideAlreadyOpenedException("이미 시작 된 Ride 가 있습니다. user id = " + ride.getUserId());
         }
 
-        return rideRepository.open(ride);
+        rideRepository.open(ride);
     }
 
     public void rideClose(int id) throws RideNotFoundException {
@@ -73,7 +73,7 @@ public class RideService {
     }
 
     public Optional<Ride> findRideByUserId(int id) {
-        return rideRepository.findByUserId(id);
+        return rideRepository.findRideByUserId(id);
     }
 
 
@@ -81,30 +81,22 @@ public class RideService {
 
     // 가장 최근에 추가된 Ride를 매칭
     public void matchLatestRide() {
-        Ride[] matchingRides = rideRepository.getRides();
-
-        if (matchingRides.length == 0) {
+        if (rideRepository.numOfCurrentRide() == 0) {
             return; //TODO: RideRepositoryEmptyException 발생 필요
         }
+        
+        Ride[] currentRides = rideRepository.getRides();
 
         // 매칭이 안된 가장 최근에 추가된 ride
-        Ride latestRide = null;
-        for (int index = matchingRides.length - 1; index >= 0; index--) {
-            if (!matchingRides[index].isMatched()) {
-                latestRide = matchingRides[index];
-                break;
-            }
-        }
-        if (latestRide == null) {
-            //TODO: NoneOfAvailableRideException 발생
-        }
+        Ride latestRide = currentRides[currentRides.length - 1];
 
         // 각 Ride의 출발지와 도착지 간의 거리를 측정해 1km 이하인 ride를 찾는다.
         Location latestCurr = latestRide.getCurrentLocation();
         Location latestDest = latestRide.getDestinationLocation();
 
-        for (int index = 0; index < matchingRides.length - 1; index++) {
-            Ride candidateRide = matchingRides[index];
+        for (Ride candidateRide : currentRides) {
+            // 마지막 ride에 도달할 경우 매칭 탐색 종료
+            if (candidateRide == latestRide) break;
 
             Location candidateCurr = candidateRide.getCurrentLocation();
             Location candidateDest = candidateRide.getDestinationLocation();
@@ -117,11 +109,17 @@ public class RideService {
                 //TODO: 출발지, 도착지 위치선정 알고리즘 필요
 
                 // 매치 출발지, 도착지 생성
-                Location departure = new Location((latestCurr.getLatitude() + candidateCurr.getLatitude()) / 2,
-                        (latestCurr.getLongtitude() + candidateCurr.getLongtitude()) / 2);
+                double departueLatitude = (latestCurr.getLatitude() + candidateCurr.getLatitude()) / 2;
+                double departureLongtitude = (latestCurr.getLongitude() + candidateCurr.getLongitude()) / 2;
 
-                Location destination = new Location((latestDest.getLatitude() + candidateDest.getLatitude()) / 2,
-                        (latestDest.getLongtitude() + candidateDest.getLongtitude()) / 2);
+                Location departure = new Location.Builder()
+                                                    .latitude(departueLatitude)
+                                                    .longitude(departureLongtitude)
+                                                    .build();
+                Location destination = new Location.Builder()
+                                                    .latitude(departueLatitude)
+                                                    .longitude(departureLongtitude)
+                                                    .build();
 
                 // 매치 생성
                 Match newMatch = new Match.Builder()
@@ -156,7 +154,7 @@ public class RideService {
     //TODO: 분리 필요
     private static double getDistance(Location loc1, Location loc2) {
         double latitudeDistance = Math.toRadians(Math.abs(loc1.getLatitude() - loc2.getLatitude()));
-        double longtitudeDistance = Math.toRadians(Math.abs(loc1.getLongtitude() - loc2.getLongtitude()));
+        double longtitudeDistance = Math.toRadians(Math.abs(loc1.getLongitude() - loc2.getLongitude()));
 
         double a = Math.sin(latitudeDistance / 2) * Math.sin(latitudeDistance / 2)
                 + Math.cos(Math.toRadians(loc1.getLatitude())) * Math.cos(Math.toRadians(loc2.getLatitude()))
