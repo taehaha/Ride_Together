@@ -11,12 +11,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class mainController {
+public class MainController {
     private final UserService userService;
     private final RideService rideService;
 
     @Autowired
-    public mainController(UserService userService, RideService rideService) {
+    public MainController(UserService userService, RideService rideService) {
         this.userService = userService;
         this.rideService = rideService;
     }

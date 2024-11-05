@@ -17,11 +17,11 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/auth")
-public class authController {
+public class AuthController {
     private final UserService userService;
 
     @Autowired
-    public authController(UserService userService) {
+    public AuthController(UserService userService) {
         this.userService = userService;
     }
 
