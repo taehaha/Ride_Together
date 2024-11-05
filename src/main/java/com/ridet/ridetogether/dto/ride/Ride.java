@@ -1,6 +1,9 @@
-package com.ridet.ridetogether.domain;
+package com.ridet.ridetogether.dto.ride;
 
-import java.util.Date;
+
+import com.ridet.ridetogether.domain.Location;
+
+import java.sql.Timestamp;
 
 /**
  * <h2>RIDE</h2>
@@ -11,30 +14,26 @@ public class Ride {
     private int userId; // 요청자
     private Location currentLocation; // 요청된 위치
     private Location destinationLocation; // 목적지
-    private Date rideRequestDate; // 요청시각
-    private boolean matched; // 매칭이 되었는지 확인
+    private Timestamp requestDate; // 요청시각
 
     public Ride() {
         currentLocation = new Location.Builder().build();
         destinationLocation = new Location.Builder().build();
     }
 
-    public Ride(int userId, Location currentLocation, Location destinationLocation, Date rideRequestDate, boolean matched) {
+    public Ride(int userId, Location currentLocation, Location destinationLocation, Timestamp requestDate) {
         super();
         this.id = null;
         this.userId = userId;
         this.currentLocation = currentLocation;
         this.destinationLocation = destinationLocation;
-        this.rideRequestDate = rideRequestDate;
-        this.matched = matched;
+        this.requestDate = requestDate;
     }
 
     public static class Builder {
         int userId;
         Location currentLocation;
         Location destinationLocation;
-        Date rideRequestDate;
-        boolean matched;
 
         public Builder userId(int userId) {
             this.userId = userId;
@@ -50,18 +49,9 @@ public class Ride {
             this.destinationLocation = destinationLocation;
             return this;
         }
-        public Builder rideRequestDate(Date date) {
-            this.rideRequestDate = date;
-            return this;
-        }
-
-        public Builder matched(boolean matched) {
-            this.matched = matched;
-            return this;
-        }
 
         public Ride build() {
-            return new Ride(userId, currentLocation, destinationLocation, rideRequestDate, false);
+            return new Ride(userId, currentLocation, destinationLocation, null);
         }
     }
 
@@ -97,19 +87,22 @@ public class Ride {
         this.destinationLocation = destinationLocation;
     }
 
-    public Date getRideRequestDate() {
-        return rideRequestDate;
+    public Timestamp getRequestDate() {
+        return requestDate;
     }
 
-    public void setRideRequestDate(Date rideRequestDate) {
-        this.rideRequestDate = rideRequestDate;
+    public void setRequestDate(Timestamp requestDate) {
+        this.requestDate = requestDate;
     }
 
-    public boolean isMatched() {
-        return matched;
-    }
-
-    public void setMatched(boolean matched) {
-        this.matched = matched;
+    @Override
+    public String toString() {
+        return "Ride{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", currentLocation=" + currentLocation +
+                ", destinationLocation=" + destinationLocation +
+                ", requestDate=" + requestDate +
+                '}';
     }
 }

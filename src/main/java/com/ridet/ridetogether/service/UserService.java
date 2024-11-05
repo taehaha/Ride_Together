@@ -1,7 +1,7 @@
 package com.ridet.ridetogether.service;
 
-import com.ridet.ridetogether.domain.User;
-import com.ridet.ridetogether.domain.dao.UserRepository;
+import com.ridet.ridetogether.dto.user.User;
+import com.ridet.ridetogether.model.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,30 +9,31 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserService(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
 
-    public void createUser(User user) {
-        userRepository.add(user);
+    public User add(User user) {
+        userMapper.add(user);
+        return user;
     }
 
     public void updateUser(User user) {
         return;
     }
 
-    public void deleteUser(int userId) {
-        userRepository.delete(userId);
+    public void delete(int userId) {
+        userMapper.delete(userId);
     }
 
-    public Optional<User> getUserById(int id) {
-        return userRepository.getUserById(id);
+    public Optional<User> findUserById(int id) {
+        return Optional.ofNullable(userMapper.findUserById(id));
     }
 
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.getUserByEmail(email);
+    public Optional<User> findUserByEmail(String email) {
+        return Optional.ofNullable(userMapper.findUserByEmail(email));
     }
 }

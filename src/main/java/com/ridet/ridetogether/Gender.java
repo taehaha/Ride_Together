@@ -1,19 +1,13 @@
 package com.ridet.ridetogether;
 
 public enum Gender {
-    MALE("MALE","남자"),
-    FEMALE("FEMALE", "여자");
+    MALE("남자"),
+    FEMALE("여자");
 
-    private final String key;
     private final String description;
 
-    Gender(String key, String description) {
-        this.key = key;
+    Gender(String description) {
         this.description = description;
-    }
-
-    public String getKey() {
-        return key;
     }
 
     public String getDescription() {

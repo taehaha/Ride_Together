@@ -1,10 +1,10 @@
-package com.ridet.ridetogether.domain.dto;
+package com.ridet.ridetogether.dto;
 
-public class SigninFormDTO {
+public class SigninFormDto {
     private String email;
     private String password;
 
-    public SigninFormDTO() {
+    public SigninFormDto() {
     }
 
     public String getEmail() {

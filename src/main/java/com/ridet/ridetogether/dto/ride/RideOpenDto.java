@@ -1,6 +1,6 @@
-package com.ridet.ridetogether.domain.dto;
+package com.ridet.ridetogether.dto.ride;
 
-public class MatchOpenDTO {
+public class RideOpenDto {
     // 현재위치 좌표
     private double currentLatitude;
     private double currentLongtitude;

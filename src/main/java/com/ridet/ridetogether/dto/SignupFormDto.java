@@ -1,16 +1,16 @@
-package com.ridet.ridetogether.domain.dto;
+package com.ridet.ridetogether.dto;
 
 import com.ridet.ridetogether.Gender;
 import com.ridet.ridetogether.UserRole;
 
-public class SignupFormDTO {
+public class SignupFormDto {
     public String email;
     public String password;
     public String name;
     public Gender gender;
     public UserRole userRole;
 
-    public SignupFormDTO() {
+    public SignupFormDto() {
 
     }
 

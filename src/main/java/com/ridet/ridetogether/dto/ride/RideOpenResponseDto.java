@@ -1,8 +1,6 @@
-package com.ridet.ridetogether.domain.dto;
+package com.ridet.ridetogether.dto.ride;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class MatchOpenResponseDTO {
+public class RideOpenResponseDto {
     private Boolean success;
     private int numOfRide;
 

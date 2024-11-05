@@ -6,7 +6,7 @@
 </head>
 <body>
   <h1>Login Page</h1>
-  <form th:object="${signinFormDTO}" action="/auth/signin/process" method="post">
+  <form th:object="${signinFormDto}" action="/auth/signin" method="POST">
       <div>
           <label>이메일</label>
           <input type="text" th:field="*{email}" placeholder="Email" required>

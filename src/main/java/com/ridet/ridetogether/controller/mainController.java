@@ -1,7 +1,7 @@
 package com.ridet.ridetogether.controller;
 
-import com.ridet.ridetogether.domain.Ride;
-import com.ridet.ridetogether.domain.User;
+import com.ridet.ridetogether.dto.ride.Ride;
+import com.ridet.ridetogether.dto.user.User;
 import com.ridet.ridetogether.service.RideService;
 import com.ridet.ridetogether.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -23,15 +23,12 @@ public class mainController {
 
     @GetMapping("/")
     public String index(Model model, HttpSession session) {
-        Integer id = (Integer) session.getAttribute("id");
-
-        User user = null;
+        User user = (User) session.getAttribute("user");
         Ride ride = null;
 
-        // User, Ride 정보 주입
-        if (id != null) {
-            user = userService.getUserById(id).orElse(null);
-            ride = rideService.findRideByUserId(id).orElse(null);
+        // Ride 정보 주입
+        if (user != null) {
+            ride = rideService.findRideByUserId(user.getId()).orElse(null);
         }
 
         model.addAttribute("user", user);

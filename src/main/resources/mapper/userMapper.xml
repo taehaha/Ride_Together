@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ridet.ridetogether.model.mapper.UserMapper">
+    <resultMap id="user" type="User">
+        <result property="id" column="id"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="name" column="name"/>
+        <result property="gender" column="gender"/>
+        <result property="role" column="role"/>
+        <result property="active" column="isActive"/>
+    </resultMap>
+
+    <insert id="add" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (email, password, name, gender, role)
+        VALUES (#{email}, #{password}, #{name}, #{gender}, #{role})
+    </insert>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM users where id = #{userId}
+    </delete>
+
+    <select id="findUserById" parameterType="int" resultMap="user">
+        SELECT id, email, password, gender, role, name, isActive
+        FROM users
+        WHERE id = #{userId}
+    </select>
+
+    <select id="findUserByEmail" parameterType="String" resultMap="user">
+        SELECT id, email, password, gender, role, name, isActive
+        FROM users
+        WHERE email = #{email}
+    </select>
+</mapper>

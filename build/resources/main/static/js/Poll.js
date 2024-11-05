@@ -6,7 +6,7 @@ export default class Poll {
     #polling = () => {
         return setInterval(async () => {
             fetch(this.url, {
-                method: "POST",
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json"
                 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ridet.ridetogether.model.mapper.RideMapper">
+    <resultMap id="ride" type="Ride">
+        <result property="id" column="id" />
+        <result property="userId" column="userId" />
+        <result property="currentLocation.latitude" column="currentLatitude" />
+        <result property="currentLocation.longitude" column="currentLongitude" />
+        <result property="destinationLocation.latitude" column="destinationLatitude" />
+        <result property="destinationLocation.longitude" column="destinationLongitude" />
+        <result property="requestDate" column="requestDate" />
+    </resultMap>
+    
+    <insert id="open" parameterType="Ride" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO rides (userId, currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, requestDate)
+        VALUES (#{userId}, #{currentLocation.latitude}, #{currentLocation.longitude}, #{destinationLocation.latitude}, #{destinationLocation.longitude}, #{requestDate})
+    </insert>
+    
+    <delete id="close" parameterType="int">
+        DELETE FROM rides WHERE id = #{rideId}
+    </delete>
+
+    <select id="findRideById" parameterType="int" resultMap="ride">
+        SELECT * FROM rides WHERE id = #{rideId}
+    </select>
+
+    <select id="findRideByUserId" parameterType="int" resultMap="ride">
+        SELECT * FROM rides WHERE userId = #{userId}
+    </select>
+    
+    <select id="selectAll" resultMap="ride">
+        SELECT id, userId, currentLatitude, currentLongitude, destinationLatitude, destinationLongitude, requestDate
+        FROM rides;
+    </select>
+
+    <select id="numOfCurrentRide" resultType="int">
+        SELECT count(*) from rides;
+    </select>
+</mapper>

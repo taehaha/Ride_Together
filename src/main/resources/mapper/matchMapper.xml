@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ridet.ridetogether.model.mapper.MatchMapper">
+    <resultMap id="match" type="Match">
+        <result property="id" column="id"/>
+        <result property="rideId1" column="rideId1"/>
+        <result property="rideId2" column="rideId2"/>
+        <result property="departure.latitude" column="departureLatitude"/>
+        <result property="departure.longitude" column="departureLongitude"/>
+        <result property="destination.latitude" column="destinationLatitude"/>
+        <result property="destination.longitude" column="destinationLongitude"/>
+        <result property="matchedTimestamp" column="matchedTimestamp"/>
+    </resultMap>
+
+    <insert id="add" parameterType="Match" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO matches(rideId1, rideId2, departureLatitude, departureLongitude, destinationLatitude, destinationLongitude)
+        VALUES(#{rideId1}, #{rideId2}, #{departure.latitude}, #{departure.longitude}, #{destination.latitude}, #{destination.longitude})
+    </insert>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM matches
+        WHERE id = #{id}
+    </delete>
+
+    <select id="findMatchById" parameterType="int" resultMap="match">
+        SELECT id, rideId1, rideId2, departureLatitude, departureLongitude, destinationLatitude, destinationLongitude, matchedTimestamp
+        FROM matches
+        WHERE id = #{id}
+    </select>
+
+    <select id="findMatchByUserId" parameterType="int" resultMap="match">
+        SELECT B.id as id,
+                B.rideId1 as rideId1,
+                B.rideId2 as rideId2,
+                B.departureLatitude as departureLatitude,
+                B.departureLongitude as departureLongitude,
+                B.destinationLatitude as destinationLatitude,
+                B.destinationLongitude as destinationLongitude,
+                B.matchedTimestamp as matchedTimestamp
+        FROM rides as A join matches as B
+        ON (A.id = B.rideId1 or A.id = B.rideId2)
+        WHERE A.userId = #{id}
+        limit 1
+    </select>
+</mapper>

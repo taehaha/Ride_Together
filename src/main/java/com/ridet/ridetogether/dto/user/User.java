@@ -1,4 +1,4 @@
-package com.ridet.ridetogether.domain;
+package com.ridet.ridetogether.dto.user;
 
 import com.ridet.ridetogether.Gender;
 import com.ridet.ridetogether.UserRole;
@@ -16,7 +16,7 @@ public class User {
     private UserRole role;
     private boolean active;
 
-    public User(String email, String password, String name, Gender gender, UserRole role, boolean active) {
+    private User(String email, String password, String name, Gender gender, UserRole role, boolean active) {
         this.id = null;
         this.email = email;
         this.password = password;
@@ -34,9 +34,14 @@ public class User {
         private UserRole role;
         private boolean active;
 
-        public Builder(String email, String password) {
+        public Builder email(String email) {
             this.email = email;
+            return this;
+        }
+
+        public Builder password(String password) {
             this.password = password;
+            return this;
         }
 
         public Builder name(String name) {
@@ -118,5 +123,18 @@ public class User {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", gender=" + gender +
+                ", role=" + role +
+                ", active=" + active +
+                '}';
     }
 }

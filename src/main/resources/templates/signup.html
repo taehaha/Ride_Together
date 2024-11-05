@@ -30,7 +30,7 @@
 <!--        </div>-->
 <!--    </form>-->
 
-    <form th:object="${signupFormDTO}" action="/auth/signup/process" method="post">
+    <form th:object="${signupFormDto}" action="/auth/signup" method="POST">
         <div>
             <label for="email">이메일</label>
             <input type="text" th:field="*{email}" placeholder="Email" required>
