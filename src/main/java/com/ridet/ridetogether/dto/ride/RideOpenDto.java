@@ -3,7 +3,7 @@ package com.ridet.ridetogether.dto.ride;
 public class RideOpenDto {
     // 현재위치 좌표
     private double currentLatitude;
-    private double currentLongtitude;
+    private double currentLongitude;
 
     // 목적지위치 좌표
     private double destinationLatitude;
@@ -17,12 +17,12 @@ public class RideOpenDto {
         this.currentLatitude = currentLatitude;
     }
 
-    public double getCurrentLongtitude() {
-        return currentLongtitude;
+    public double getCurrentLongitude() {
+        return currentLongitude;
     }
 
-    public void setCurrentLongtitude(double currentLongtitude) {
-        this.currentLongtitude = currentLongtitude;
+    public void setCurrentLongitude(double currentLongitude) {
+        this.currentLongitude = currentLongitude;
     }
 
     public double getDestinationLatitude() {

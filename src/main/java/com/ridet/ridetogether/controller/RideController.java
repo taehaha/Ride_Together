@@ -46,12 +46,12 @@ public class RideController {
         // DTO로부터 현재위치, 목적지 가져오기
         Location currentLocation = new Location.Builder()
                                                 .latitude(rideOpenDto.getCurrentLatitude())
-                                                .longitude(rideOpenDto.getCurrentLongtitude())
+                                                .longitude(rideOpenDto.getCurrentLongitude())
                                                 .build();
 
         Location destinationLocation = new Location.Builder()
                                                     .latitude(rideOpenDto.getCurrentLatitude())
-                                                    .longitude(rideOpenDto.getCurrentLongtitude())
+                                                    .longitude(rideOpenDto.getCurrentLongitude())
                                                     .build();
 
         // Ride 생성
