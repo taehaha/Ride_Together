@@ -7,7 +7,7 @@ public class RideOpenDto {
 
     // 목적지위치 좌표
     private double destinationLatitude;
-    private double destinationLongtitude;
+    private double destinationLongitude;
 
     public double getCurrentLatitude() {
         return currentLatitude;
@@ -33,11 +33,11 @@ public class RideOpenDto {
         this.destinationLatitude = destinationLatitude;
     }
 
-    public double getDestinationLongtitude() {
-        return destinationLongtitude;
+    public double getDestinationLongitude() {
+        return destinationLongitude;
     }
 
-    public void setDestinationLongtitude(double destinationLongtitude) {
-        this.destinationLongtitude = destinationLongtitude;
+    public void setDestinationLongitude(double destinationLongitude) {
+        this.destinationLongitude = destinationLongitude;
     }
 }

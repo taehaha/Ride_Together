@@ -22,8 +22,8 @@
     <!-- 맵 Destination Marker 위치 관련 -->
     <input id="destinationLatitude" type="hidden" th:if="${ride == null}" value="">
     <input id="destinationLatitude" type="hidden" th:if="${ride != null}" th:value="${ride.getDestinationLocation().getLatitude()}">
-    <input id="destinationLongtitude" type="hidden" th:if="${ride == null}" value="">
-    <input id="destinationLongtitude" type="hidden" th:if="${ride != null}" th:value="${ride.getDestinationLocation().getLongtitude()}">
+    <input id="destinationLongitude" type="hidden" th:if="${ride == null}" value="">
+    <input id="destinationLongitude" type="hidden" th:if="${ride != null}" th:value="${ride.getDestinationLocation().getLongitude()}">
     <!-- 매칭 버튼 관련 -->
     <button th:if="${ride == null}" th:id="matchButton" th:value="match" style="width: 100vw">매칭</button>
     <button th:if="${ride != null}" th:id="matchButton" th:value="cancelMatch" style="width: 100vw">매칭 취소</button>
@@ -88,14 +88,14 @@
 
                 // ride가 등록되어 있을 경우 해당 위치로 destinationPosition을 설정
                 let destinationLatitude = document.getElementById("destinationLatitude").value;
-                let destinationLongtitude = document.getElementById("destinationLongtitude").value;
+                let destinationLongitude = document.getElementById("destinationLongitude").value;
 
                 // destinationPosition 표시
                 if (destinationLatitude === "") {
                     destinationPosition = mapInstance.getCenterPosition();
                     mapInstance.moveDestinationPosition();
                 } else {
-                    destinationPosition = new kakao.maps.LatLng(destinationLatitude, destinationLongtitude);
+                    destinationPosition = new kakao.maps.LatLng(destinationLatitude, destinationLongitude);
                     mapInstance.stopDestinationPosition();
                 }
 

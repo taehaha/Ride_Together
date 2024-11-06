@@ -91,13 +91,17 @@
                 let destinationLongitude = document.getElementById("destinationLongitude").value;
 
                 // destinationPosition 표시
-                if (destinationLatitude === "") {
-                    destinationPosition = mapInstance.getCenterPosition();
-                    mapInstance.moveDestinationPosition();
-                } else {
+                if (destinationLatitude) {
+                    console.log("ride exist");
                     destinationPosition = new kakao.maps.LatLng(destinationLatitude, destinationLongitude);
                     mapInstance.stopDestinationPosition();
+                } else {
+                    console.log("ride not exist");
+                    destinationPosition = mapInstance.getCenterPosition();
+                    mapInstance.moveDestinationPosition();
                 }
+
+                console.log(destinationPosition);
 
                 // 지도에 내 위치, 목적지 위치 Marker 표시
                 mapInstance.markMyPosition(currentPosition);
@@ -113,7 +117,7 @@
         // 매칭 시작
         if (document.getElementById("matchButton").value === "match") {
             const position = mapInstance.getCenterPosition();
-            
+
             // DTO에 들어갈 json data
             const data = {
                 currentLatitude: currentPosition.getLat().toString(),

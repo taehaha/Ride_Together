@@ -50,8 +50,8 @@ public class RideController {
                                                 .build();
 
         Location destinationLocation = new Location.Builder()
-                                                    .latitude(rideOpenDto.getCurrentLatitude())
-                                                    .longitude(rideOpenDto.getCurrentLongitude())
+                                                    .latitude(rideOpenDto.getDestinationLatitude())
+                                                    .longitude(rideOpenDto.getDestinationLongitude())
                                                     .build();
 
         // Ride 생성
