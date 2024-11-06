@@ -1,7 +1,6 @@
 package com.ridet.ridetogether.controller;
 
 import com.ridet.ridetogether.domain.Location;
-import com.ridet.ridetogether.dto.match.Match;
 import com.ridet.ridetogether.dto.ride.Ride;
 import com.ridet.ridetogether.dto.user.User;
 import com.ridet.ridetogether.exception.RideAlreadyMatchedException;
@@ -17,18 +16,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/ride")
-public class rideController {
+public class RideController {
     private final UserService userService;
     private final RideService rideService;
     private final MatchService matchService;
 
     @Autowired
-    public rideController(UserService userService, RideService rideService, MatchService matchService) {
+    public RideController(UserService userService, RideService rideService, MatchService matchService) {
         this.userService = userService;
         this.rideService = rideService;
         this.matchService = matchService;

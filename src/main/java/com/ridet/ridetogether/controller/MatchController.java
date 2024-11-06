@@ -42,7 +42,6 @@ public class MatchController {
         } else {
             MatchInfoDto matchInfoDto = new MatchInfoDto();
             Match match = optionalMatch.get();
-
             matchInfoDto.setDeparture(match.getDeparture());
             matchInfoDto.setDestination(match.getDestination());
 

@@ -57,12 +57,13 @@ public class RideService {
     public Optional<Ride> findRideByUserId(int userId) {
         return Optional.ofNullable(rideMapper.findRideByUserId(userId));
     }
-
     public Optional<Match> match(Ride ride) {
         List<Ride> list = rideMapper.selectAll();
 
         Match newMatch = null;
         for (Ride candidateRide : list) {
+            if (candidateRide.getId() == ride.getId()) continue;
+
             Location candidateLoc = candidateRide.getCurrentLocation();
             Location candidateDestLoc = candidateRide.getDestinationLocation();
             Location myLoc = ride.getCurrentLocation();
